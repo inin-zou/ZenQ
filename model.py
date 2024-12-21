@@ -21,14 +21,15 @@ class MnistModel(nn.Module):
         self.device = device
         self.embedding_size = embedding_size
         if self.embedding_size:
-            input_size += embedding_size #considering 30 photons and 2 modes
+            input_size = embedding_size
         self.linear = nn.Linear(input_size, num_classes)
     
     def forward(self, xb, emb = None):
         xb = xb.reshape(-1, 784)
         if self.embedding_size and emb is not None:
             # concatenation of the embeddings and the input images
-            xb = torch.cat((xb,emb),dim=1)
+            # xb = torch.cat((xb,emb),dim=1)
+            xb = emb
         out = self.linear(xb)
         return(out)
     
@@ -65,7 +66,6 @@ class MnistModel(nn.Module):
         print("Epoch [{}], val_loss: {:.4f}, val_acc: {:.4f}".format(epoch, result['val_loss'], result['val_acc']))
         return result['val_loss'], result['val_acc']
 
-# evaluation of the model
 # evaluation of the model
 def evaluate(model, val_loader, bs: BosonSampler = None):
     if model.embedding_size:
